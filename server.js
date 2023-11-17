@@ -5,18 +5,23 @@ const multer = require('multer');
 const fs = require('fs');
 const axios = require('axios');
 const cors = require('cors');
+const http = require('http');
+const socketIO = require('socket.io');
 
 
 
 
 var app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
 
 
 const CLIENT_ID = OAuth2Data.web.client_id;
 const CLIENT_SECRET = OAuth2Data.web.client_secret;
 const REDIRECT_URL = OAuth2Data.web.redirect_uris[0];
 
-var title, description, tags;
+var title, description, tags, progressString;
 
 
 
@@ -29,7 +34,10 @@ const oAuth2Client = new google.auth.OAuth2(
 
 var authed = false;
 
-var scopes = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/youtube.upload '
+var scopes = ['https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/youtube.upload',
+    'https://www.googleapis.com/auth/youtube.readonly'
+]
 
 app.use(cors({
     credentials: true,
@@ -39,6 +47,29 @@ app.use(cors({
 const upload = multer();
 app.use(upload.array());
 app.use(express.json());
+
+
+
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    // Handle WebSocket events here
+    // You can emit messages or updates to connected clients
+    // For example: socket.emit('progress', { progressString });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
+
+
+
+
+
+
+
+
 
 app.get('/auth/google/callback', (req, res) => {
 
@@ -91,8 +122,13 @@ app.get('/', (req, res) => {
 
 app.get('/get-channel-info', async (req, res) => {
     try {
-        // Assuming req.user contains the authenticated user data
-        const channels = await getChannels(req.user.googleId);
+        if (!authed) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        // Call the getChannels function and pass the oAuth2Client
+        const channels = await getChannels(oAuth2Client);
         res.json({ channels });
     } catch (error) {
         console.error('Error fetching channel information:', error.message);
@@ -101,27 +137,52 @@ app.get('/get-channel-info', async (req, res) => {
 });
 
 // Function to get channel information
-function getChannels(oAuth2Client) {
+// function getChannels(oAuth2Client) {
+//     const service = google.youtube('v3');
+//     service.channels.list({
+//         auth: oAuth2Client,
+//         part: 'snippet,contentDetails,statistics',
+//         mine: true,
+//     }, (err, response) => {
+//         if (err) {
+//             console.log('The API returned an error: ' + err);
+//             return;
+//         }
+//         const channels = response.data.items;
+//         if (channels.length === 0) {
+//             console.log('No channel found.');
+//         } else {
+//             console.log('This channel\'s ID is %s. Its title is \'%s\', and ' +
+//                 'it has %s views.',
+//                 channels[0].id,
+//                 channels[0].snippet.title,
+//                 channels[0].statistics.viewCount);
+//         }
+//     });
+// }
+
+async function getChannels(oAuth2Client) {
     const service = google.youtube('v3');
-    service.channels.list({
-        auth: oAuth2Client,
-        part: 'snippet,contentDetails,statistics',
-        mine: true,
-    }, (err, response) => {
-        if (err) {
-            console.log('The API returned an error: ' + err);
-            return;
-        }
-        const channels = response.data.items;
-        if (channels.length === 0) {
-            console.log('No channel found.');
-        } else {
-            console.log('This channel\'s ID is %s. Its title is \'%s\', and ' +
-                'it has %s views.',
-                channels[0].id,
-                channels[0].snippet.title,
-                channels[0].statistics.viewCount);
-        }
+    return new Promise((resolve, reject) => {
+        service.channels.list({
+            auth: oAuth2Client,
+            part: 'snippet,contentDetails,statistics',
+            mine: true,
+        }, (err, response) => {
+            if (err) {
+                console.log('The API returned an error: ' + err);
+                reject(err);
+                return;
+            }
+            const channels = response.data.items;
+            if (channels.length === 0) {
+                console.log('No channel found.');
+                reject(new Error('No channel found'));
+            } else {
+                console.log('Channels:', channels);
+                resolve(channels);
+            }
+        });
     });
 }
 
@@ -171,22 +232,24 @@ app.post('/upload', async (req, res) => {
             uploadedBytes += chunk.length;
 
             const progress = (uploadedBytes / fileSize) * 100;
-            const progressString = `Upload Progress: ${progress.toFixed(2)}%`;
+            progressString = `Upload Progress: ${progress.toFixed(2)}%`;
             process.stdout.write('\r' + progressString.padEnd(previousLineLength, ' '));
             previousLineLength = progressString.length;
+
+            io.emit('progress', { progressString });
         });
-            // console.log(`Upload Progress: ${progress.toFixed(2)}%`);
+        // console.log(`Upload Progress: ${progress.toFixed(2)}%`);
 
         // });
 
         response.data.on('end', async () => {
             media.body = Buffer.concat(chunks);
-            
+
             // Execute the request
-             try {
+            try {
                 const result = await request;
                 console.log("\nUploading video done");
-                res.send(`Video uploaded with ID: ${result.data.id}`);
+                res.send({ message: `Video uploaded with ID: ${result.data.id}`, progressString });
             } catch (error) {
                 console.error('Error uploading video:', error.message);
                 res.status(500).send('Error uploading video');
@@ -197,6 +260,8 @@ app.post('/upload', async (req, res) => {
         res.status(500).send('Error uploading video');
     }
 })
+
+
 
 app.listen(5000, () => {
     console.log("App is listening on Port 5000");
