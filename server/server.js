@@ -1,20 +1,27 @@
 var express = require('express');
-var OAuth2Data = require('./credentials.json');
+var OAuth2Data = require('./credentials092.json');
 const { google } = require('googleapis');
 const multer = require('multer');
 const fs = require('fs');
 const axios = require('axios');
 const cors = require('cors');
 const http = require('http');
-const socketIO = require('socket.io');
+const {Server} = require('socket.io');
 
 
 
 
 var app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
+// const server = http.createServer(app);
+// const io = socketIO(server);
 
+// import { Server } from 'socket.io';
+
+const io = new Server(8000, {
+    cors: {
+        origin: "http://localhost:3000",
+    },
+})
 
 
 const CLIENT_ID = OAuth2Data.web.client_id;
@@ -47,20 +54,6 @@ app.use(cors({
 const upload = multer();
 app.use(upload.array());
 app.use(express.json());
-
-
-
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    // Handle WebSocket events here
-    // You can emit messages or updates to connected clients
-    // For example: socket.emit('progress', { progressString });
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
-});
 
 
 
@@ -261,6 +254,19 @@ app.post('/upload', async (req, res) => {
     }
 })
 
+
+
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    // Handle WebSocket events here
+    // You can emit messages or updates to connected clients
+    // For example: socket.emit('progress', { progressString });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
 
 
 app.listen(5000, () => {
