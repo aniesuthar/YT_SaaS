@@ -6,6 +6,7 @@ const fs = require('fs');
 const axios = require('axios');
 const cors = require('cors');
 const http = require('http');
+const Connection  = require('./database/db.js');
 const {Server} = require('socket.io');
 
 
@@ -268,6 +269,7 @@ io.on('connection', (socket) => {
     });
 });
 
+Connection();
 
 app.listen(5000, () => {
     console.log("App is listening on Port 5000");
