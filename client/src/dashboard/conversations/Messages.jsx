@@ -6,11 +6,13 @@ import TypeField from './TypeField';
 
 
 
+
 export default function Messages({conversation}) {
 
     const scrollRef = useRef();
     const [messages, setMessages] = useState([]);
-    const { sender, currentAccount } = useContext(AccountContext);
+    const [incomingMessage , setIncomingMessage] = useState(null)
+    const { sender, currentAccount, socket, newMessageFlag, setNewMessageFlag } = useContext(AccountContext);
 
     let image;
 
@@ -42,11 +44,30 @@ export default function Messages({conversation}) {
         }
         console.log(message);
         console.log(value);
-        // socket.current.emit('sendMessage', message);
+        socket.current.emit('sendMessage', message);
         await newMessage(message);
 
         setValue('');
+        setNewMessageFlag(prev => !prev);
     }
+
+    
+
+    useEffect(() => {
+
+        socket.current.on('getMessages', (data) => {
+            setIncomingMessage({
+                ...data,
+                createdAt: Date.now()
+            })
+        });
+    }, []);
+    
+    useEffect(() => {
+        incomingMessage && conversation?.members?.includes(incomingMessage.senderId) && 
+        setMessages(prev => [...prev, incomingMessage]);
+    }, [incomingMessage, conversation])
+
 
 
     useEffect(() => {
@@ -55,9 +76,21 @@ export default function Messages({conversation}) {
             let data = await getMessages(conversation?._id);
             setMessages(data);
             console.log("getMessages:", data);
+
+            // socket.current.on('getMessages', (data) => {
+            //     // Update your React state or UI with the progress data
+            //     setMessages(data);
+            // });
         }
         getMessageDetails();
-    }, [conversation]);
+    }, [conversation?._id, sender._id, newMessageFlag]);
+
+
+
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ transition: "smooth" })
+    }, [messages]);
+
 
     return (
         <>

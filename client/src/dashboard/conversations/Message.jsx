@@ -28,7 +28,7 @@ const TextMessage = ({ message }) => {
 
     return (
         <>
-            <p>{message.text} <span className='timestamp'>{formatDate(message.createdAt)}</span></p>
+            {message.text} <span className='timestamp'>{formatDate(message.createdAt)}</span>
         </>
     )
 }

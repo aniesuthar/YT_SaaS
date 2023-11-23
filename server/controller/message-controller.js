@@ -1,5 +1,6 @@
 const Message = require('../modal/MessageModal');
 const Conversation = require('../modal/ConversationModal');
+const io = require('../../socket/index');
 
 
 module.exports.newMessage = async (request, response) => {
@@ -19,9 +20,11 @@ module.exports.newMessage = async (request, response) => {
 module.exports.getMessages = async (request, response) => {
     try {
         const messages = await Message.find({ conversationId: request.params.id });
+        io.emit('getMessages', { messages });
         return response.status(200).json(messages);
     } catch (error) {
         return response.status(500).json(error.message);
+
     }
 
 }

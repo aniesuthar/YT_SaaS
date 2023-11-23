@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import io from 'socket.io-client';
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
+import AccountProvider from '../../context/AccountProvider';
 
 
 
@@ -8,7 +8,7 @@ export default function UploadForm() {
     const [upPercent, setUpPercent] = useState(null);
     const [formData, setFormData] = useState({});
 
-    const socket = io('http://localhost:8000/');
+    const {socket} = useContext(AccountProvider);
 
 
     useEffect(() => {
