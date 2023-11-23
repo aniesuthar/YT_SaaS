@@ -253,7 +253,7 @@ export default function Dashboard({ user, channels, authed }) {
                     </NavLink>
                 </div>
                 <Routes>
-                    <Route path="/" element={<ProjectsSection/>} ></Route>
+                    <Route path="/" element={<ProjectsSection switchView={{switchToGridView, switchToListView}}/>} ></Route>
                     <Route path="/fetch-channels" element={<FetchChannels authed={authed}/>}></Route>
                     <Route path="/upload-form" element={<UploadForm/>} />
                 </Routes>

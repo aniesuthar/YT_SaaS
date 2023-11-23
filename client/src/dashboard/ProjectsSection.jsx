@@ -1,7 +1,7 @@
 import React from 'react'
 import ProjectBoxes from './ProjectBoxes'
 
-export default function ProjectsSection() {
+export default function ProjectsSection({switchView}) {
   return (
       <div className="dashboard-container">
           <div className="dashboard-container-header">
@@ -24,7 +24,7 @@ export default function ProjectsSection() {
                   </div>
               </div>
               <div className="view-actions">
-                  <button className="view-btn list-view" title="List View">
+                  <button className="view-btn list-view" title="List View" onClick={()=>switchView.switchToListView()}>
                       <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width={24}
@@ -45,7 +45,7 @@ export default function ProjectsSection() {
                           <line x1={3} y1={18} x2="3.01" y2={18} />
                       </svg>
                   </button>
-                  <button className="view-btn grid-view active" title="Grid View">
+                  <button className="view-btn grid-view active" title="Grid View" onClick={()=>switchView.switchToGridView()}>
                       <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width={20}

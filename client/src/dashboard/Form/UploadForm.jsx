@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
-import AccountProvider from '../../context/AccountProvider';
+import { AccountContext } from '../../context/AccountProvider';
 
 
 
@@ -8,19 +8,19 @@ export default function UploadForm() {
     const [upPercent, setUpPercent] = useState(null);
     const [formData, setFormData] = useState({});
 
-    const {socket} = useContext(AccountProvider);
+    const {socket} = useContext(AccountContext);
 
 
     useEffect(() => {
 
-        socket.on('progress', (data) => {
+        socket.current.on('progress', (data) => {
             // Update your React state or UI with the progress data
             console.log('Progress update:', data.progressString);
             setUpPercent(data.progressString);
         });
 
         return () => {
-            socket.disconnect();
+            socket.current.disconnect();
         };
     }, [socket]);
 
