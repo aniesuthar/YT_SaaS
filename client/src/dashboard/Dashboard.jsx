@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, NavLink, Route, Routes } from 'react-router-dom';
+import { AccountContext } from '../context/AccountProvider';
 import './Dashboard.scss'
 import ProjectBoxes from './ProjectBoxes';
 import Conversations from './conversations/Conversations';
 import ProjectsSection from './ProjectsSection';
 import FetchChannels from './FetchChannels';
 import UploadForm from  './Form/UploadForm'
+import { logout } from '../api/api';
 
 export default function Dashboard({ user, channels, authed }) {
+
+    const { setAuthed, setCurrentAccount } = useContext(AccountContext);
 
     const [isDarkMode, setDarkMode] = useState(false);
     const [isListView, setListView] = useState(true);
@@ -62,10 +66,16 @@ export default function Dashboard({ user, channels, authed }) {
         });
     }, [isDarkMode, isListView]);
 
-    const handleActiveTab = (e)=>{
-        if(e.currentTarget){
-        e.currentTarget.classList.add('active');
-        } 
+    const handleLogout = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await logout();
+            setAuthed(response.authed);
+            setCurrentAccount(null);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
     }
 
 
@@ -148,7 +158,7 @@ export default function Dashboard({ user, channels, authed }) {
                     </button>
                     <button className="profile-btn">
                         <img src={user.pic} />
-                        <span>Welcome, {user.name}!</span>
+                        <span>Hi, {user.name}!</span>
                     </button>
                 </div>
                 <button className="messages-btn">
@@ -170,7 +180,7 @@ export default function Dashboard({ user, channels, authed }) {
             </div>
             <div className="app-content">
                 <div className="app-sidebar">
-                    <NavLink to="/" className="app-sidebar-link">
+                    <NavLink to="/" className="app-sidebar-link" title="Dashboard">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width={24}
@@ -187,7 +197,7 @@ export default function Dashboard({ user, channels, authed }) {
                             <polyline points="9 22 9 12 15 12 15 22" />
                         </svg>
                     </NavLink>
-                    <NavLink to="/fetch-channels" className="app-sidebar-link">
+                    <NavLink to="/fetch-channels" className="app-sidebar-link" title="Fetch Channels">
                         <svg
                             className="link-icon"
                             xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +214,7 @@ export default function Dashboard({ user, channels, authed }) {
                             <path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z" />
                         </svg>
                     </NavLink>
-                    <NavLink to="/upload-form" className="app-sidebar-link">
+                    <NavLink to="/upload-form" className="app-sidebar-link" title="Upload to YOUTUBE">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width={24}
@@ -223,7 +233,7 @@ export default function Dashboard({ user, channels, authed }) {
                             <line x1={3} y1={10} x2={21} y2={10} />
                         </svg>
                     </NavLink>
-                    <a href="" className="app-sidebar-link">
+                    <NavLink to="/logout" onClick={handleLogout} className="app-sidebar-link" title="LOGOUT">
                         <svg
                             className="link-icon"
                             xmlns="http://www.w3.org/2000/svg"
@@ -240,7 +250,7 @@ export default function Dashboard({ user, channels, authed }) {
                             <circle cx={12} cy={12} r={3} />
                             <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
                         </svg>
-                    </a>
+                    </NavLink>
                 </div>
                 <Routes>
                     <Route path="/" element={<ProjectsSection/>} ></Route>

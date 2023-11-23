@@ -166,15 +166,19 @@
     background-color: transparent;
     display: flex;
     align-items: center;
-    padding-left: 15px;
+    padding-left: 16px;
+    // padding: 12px;
+    // border-radius: 0 20px 20px 0;
+    // border-radius: 20px;
+    // background-color: var(--search-area-bg);
     border-left: 2px solid #ddd;
 
     img {
-        width: 32px;
-        height: 32px;
+        width: 44px;
+        height: 44px;
         object-fit: cover;
         border-radius: 50%;
-        margin-right: 4px;
+        margin-right: 8px;
     }
 
     span {
@@ -442,7 +446,6 @@
 
 // Conversation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 .conversation {
-    position: relative !important;
     display: block;
 
     // overflow-y: scroll;
@@ -491,10 +494,15 @@
             // color: var(--secondary-color);
             opacity: 0.8;
             width: fit-content;
-            padding: 6px 10px;
+            padding: 2px 6px;
             margin: 5px 0;
             border-radius: 14px;
             border-top-left-radius: 0;
+
+            span.timestamp{
+                margin-left: 5px;
+                font-size: 10px;
+            }
         }
 
         & p.own {
@@ -509,7 +517,7 @@
     .type-message {
         width: 100%;
         display: flex;
-        position: sticky;
+        position: absolute;
         bottom: 0;
         left: 0;
         background-color: white;

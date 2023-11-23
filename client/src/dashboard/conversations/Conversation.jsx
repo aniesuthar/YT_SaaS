@@ -1,55 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import backIcon from '../../icons/back.png'
+import TypeField from './TypeField';
+import { AccountContext } from '../../context/AccountProvider';
+import { getConversation } from '../../api/api';
+import Messages from './Messages';
 
-export default function Conversation({ handleSetConversation }) {
+export default function Conversation({ handleBack }) {
+
+  const { sender, currentAccount } = useContext(AccountContext);
+  const [conversation, setConversation] = useState({});
+
+  useEffect(() => {
+
+    const getConversationDetails = async () => {
+      var data = await getConversation({ senderId: sender.id, receiverId: currentAccount.id });
+      setConversation(data);
+    }
+    getConversationDetails();
+  }, []);
+
+
   return (
     <div className="conversation">
       <div className="conversation-header">
-        <button onClick={handleSetConversation}>
-          <img src={backIcon} height="32px" width="32px" alt="" /></button>
+        <button onClick={() => handleBack()}>
+          <img src={backIcon} height="32px" width="32px" alt="" title="back"/></button>
         <img
-          src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2550&q=80"
+          src={sender.picture}
           alt="profile image" />
-        <span>Stephanie</span>
+        <span>{sender.name}</span>
       </div>
-      <div className="messages">
-        <div className="messages-container">
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-          <p>Received</p>
-          <p className='own'>Sent</p>
-        </div>
-      </div>
-      <div className="type-message">
-        <input type="text" placeholder='Type Message Here...'/>
-        <button>Send</button>
-      </div>
+      <Messages conversation={conversation}/>
     </div>
   )
 }
