@@ -5,8 +5,6 @@ import { formatDate } from '../../utils/commonUtils.js';
 export default function Message({message}) {
     const { sender } = useContext(AccountContext);
   return (
-    <div>
-          {
               sender.id === message.senderId ?
                   <p  className='own'>
                       {
@@ -19,8 +17,6 @@ export default function Message({message}) {
                           message.type === 'file' ? <ImageMessage message={message} /> : <TextMessage message={message} />
                       }
                   </p>
-          }
-    </div>
   )
 }
 

@@ -10,15 +10,17 @@ export default function Conversations() {
     const [chat, setChat] = useState(false);
     const { sender, setSender, currentAccount } = useContext(AccountContext);
     // const { account, socket, setActiveUsers } = useContext(AccountContext);
+
     const [users, setUsers] = useState([]);
 
+    console.log("Current Account", currentAccount);
     const handleSetChat = async (user) => {
         setSender(user);
         setChat(!chat);
         // console.log(sender);
         await setConversation({ senderId: user.id, receiverId: currentAccount.id });
     }
-    const handleBack = () =>{
+    const handleBack = () => {
         setChat(!chat);
         setSender(null);
     }
@@ -34,12 +36,13 @@ export default function Conversations() {
     }, [sender]);
 
     return (
-        chat ? <Conversation handleBack={handleBack}/> :
+        chat ? <Conversation handleBack={handleBack} /> :
             <div className="conversations-container">
                 <div className="conversations">
                     {
                         users && users.map((user, index) => (
-                            user.id !== currentAccount.id &&
+
+                            currentAccount.id !== user.id &&
 
                             <div key={index} className="message-box" onClick={() => handleSetChat(user)}>
                                 <img src={user.picture} alt="profile image" />
@@ -73,9 +76,12 @@ export default function Conversations() {
                                     <p className="message-line time">Dec, 12</p>
                                 </div>
                             </div>
+
                         ))
                     }
+
                 </div>
             </div>
+
     )
 }

@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from 'react'
 import Message from './Message'
-import { getConversation, getMessages, newMessage } from '../../api/api';
+import { getMessages } from '../../api/api';
 import { AccountContext } from '../../context/AccountProvider';
-import TypeField from './TypeField';
 
 
 
@@ -12,44 +11,7 @@ export default function Messages({conversation}) {
     const scrollRef = useRef();
     const [messages, setMessages] = useState([]);
     const [incomingMessage , setIncomingMessage] = useState(null)
-    const { sender, currentAccount, socket, newMessageFlag, setNewMessageFlag } = useContext(AccountContext);
-
-    let image;
-
-    const [value, setValue] = useState();
-    const [file, setFile] = useState();
-
-
-    const sendText = async (e) => {
-        e.preventDefault();
-        if (!value) return;
-
-        let message = {};
-        if (!file) {
-            message = {
-                senderId: sender.id,
-                receiverId: currentAccount.id,
-                conversationId: conversation._id,
-                type: 'text',
-                text: value
-            };
-        } else {
-            message = {
-                senderId: sender.id,
-                receiverId: currentAccount.id,
-                conversationId: conversation?._id,
-                type: 'file',
-                text: image
-            };
-        }
-        console.log(message);
-        console.log(value);
-        socket.current.emit('sendMessage', message);
-        await newMessage(message);
-
-        setValue('');
-        setNewMessageFlag(prev => !prev);
-    }
+    const { sender, socket, newMessageFlag } = useContext(AccountContext);
 
     
 
@@ -83,7 +45,7 @@ export default function Messages({conversation}) {
             // });
         }
         getMessageDetails();
-    }, [conversation?._id, sender._id, newMessageFlag]);
+    }, [conversation, sender, newMessageFlag]);
 
 
 
@@ -103,13 +65,7 @@ export default function Messages({conversation}) {
                     ))}
                 </div>
             </div>
-            <TypeField
-                sendText={sendText}
-                value={value}
-                setValue={setValue}
-                setFile={setFile}
-                file={file}
-            />
+            
         </>
     )
 }

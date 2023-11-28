@@ -2,12 +2,13 @@ import React, { useState, useEffect,useContext } from 'react';
 import backIcon from '../../icons/back.png'
 import TypeField from './TypeField';
 import { AccountContext } from '../../context/AccountProvider';
-import { getConversation } from '../../api/api';
+import { getConversation, newMessage } from '../../api/api';
 import Messages from './Messages';
+
 
 export default function Conversation({ handleBack }) {
 
-  const { sender, currentAccount } = useContext(AccountContext);
+  const { sender, currentAccount, socket, setNewMessageFlag } = useContext(AccountContext);
   const [conversation, setConversation] = useState({});
 
   useEffect(() => {
@@ -18,6 +19,46 @@ export default function Conversation({ handleBack }) {
     }
     getConversationDetails();
   }, []);
+
+
+
+
+  let image;
+
+  const [value, setValue] = useState();
+  const [file, setFile] = useState();
+
+
+  const sendText = async (e) => {
+    e.preventDefault();
+    if (!value) return;
+
+    let message = {};
+    if (!file) {
+      message = {
+        senderId: sender.id,
+        receiverId: currentAccount.id,
+        conversationId: conversation._id,
+        type: 'text',
+        text: value
+      };
+    } else {
+      message = {
+        senderId: sender.id,
+        receiverId: currentAccount.id,
+        conversationId: conversation?._id,
+        type: 'file',
+        text: image
+      };
+    }
+    console.log(message);
+    console.log(value);
+    socket.current.emit('sendMessage', message);
+    await newMessage(message);
+
+    setValue('');
+    setNewMessageFlag(prev => !prev);
+  }
 
 
   return (
@@ -31,6 +72,13 @@ export default function Conversation({ handleBack }) {
         <span>{sender.name}</span>
       </div>
       <Messages conversation={conversation}/>
+      <TypeField
+        sendText={sendText}
+        value={value}
+        setValue={setValue}
+        setFile={setFile}
+        file={file}
+      />
     </div>
   )
 }

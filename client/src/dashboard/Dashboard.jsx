@@ -3,15 +3,18 @@ import { Link, NavLink, Route, Routes } from 'react-router-dom';
 import { AccountContext } from '../context/AccountProvider';
 import './Dashboard.scss'
 import ProjectBoxes from './ProjectBoxes';
+import Login from '../login/Login';
 import Conversations from './conversations/Conversations';
 import ProjectsSection from './ProjectsSection';
 import FetchChannels from './FetchChannels';
-import UploadForm from  './Form/UploadForm'
+import UploadForm from './Form/UploadForm'
 import { logout } from '../api/api';
+import NotFound404 from '../components/NotFound404';
 
 export default function Dashboard({ user, channels, authed }) {
 
     const { setAuthed, setCurrentAccount } = useContext(AccountContext);
+    const [AuthUrl, setAuthUrl] = useState(null);
 
     const [isDarkMode, setDarkMode] = useState(false);
     const [isListView, setListView] = useState(true);
@@ -156,7 +159,7 @@ export default function Dashboard({ user, channels, authed }) {
                             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                         </svg>
                     </button>
-                    <button className="profile-btn">
+                    <button className="profile-btn" title="LOGOUT" onClick={handleLogout}>
                         <img src={user.pic} />
                         <span>Hi, {user.name}!</span>
                     </button>
@@ -233,7 +236,7 @@ export default function Dashboard({ user, channels, authed }) {
                             <line x1={3} y1={10} x2={21} y2={10} />
                         </svg>
                     </NavLink>
-                    <NavLink to="/logout" onClick={handleLogout} className="app-sidebar-link" title="LOGOUT">
+                    <NavLink to="/login" className="app-sidebar-link" title="LOGIN">
                         <svg
                             className="link-icon"
                             xmlns="http://www.w3.org/2000/svg"
@@ -253,11 +256,13 @@ export default function Dashboard({ user, channels, authed }) {
                     </NavLink>
                 </div>
                 <Routes>
-                    <Route path="/" element={<ProjectsSection switchView={{switchToGridView, switchToListView}}/>} ></Route>
-                    <Route path="/fetch-channels" element={<FetchChannels authed={authed}/>}></Route>
-                    <Route path="/upload-form" element={<UploadForm/>} />
+                    <Route path="/" element={<ProjectsSection switchView={{ switchToGridView, switchToListView }} />} ></Route>
+                    <Route path="/fetch-channels" element={<FetchChannels authed={authed} />}></Route>
+                    <Route path="/upload-form" element={<UploadForm />} />
+                    <Route path='*' element={<NotFound404 />} />
+                    {/* <Route path='/login' element={<Login AuthUrl={AuthUrl}/>} /> */}
                 </Routes>
-                
+
                 <div className="messages-section">
                     <button className="messages-close">
                         <svg

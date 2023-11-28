@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AccountContext } from './context/AccountProvider';
 import axios from 'axios';
-import Login from './login/Login';
 import Dashboard from './dashboard/Dashboard';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import Login from './login/Login';
 
 
 export default function YTSaaS() {
@@ -10,6 +11,8 @@ export default function YTSaaS() {
 
     const [user, setUser] = useState({});
     const [AuthUrl, setAuthUrl] = useState(null);
+
+    const navigate = useNavigate();
 
 
 
@@ -25,6 +28,11 @@ export default function YTSaaS() {
                 setAuthed(response.data.authed);
                 setCurrentAccount(response.data);
                 setUser({ name: response.data.name, pic: response.data.pic });
+                
+                if (response.data.authed) {
+                    // Use the 'history' object to navigate to the desired URL
+                    // navigate.push('/dashboard');
+                }
 
             } catch (error) {
                 console.error('Error fetching user:', error.message);
@@ -37,7 +45,8 @@ export default function YTSaaS() {
     return (
         <>
             {!authed ?
-                <Login AuthUrl={AuthUrl} /> : <Dashboard user={user} authed={authed} />
+            <Login AuthUrl={AuthUrl} /> :
+            <Dashboard user={user} authed={authed} />
             }
         </>
     );

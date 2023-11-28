@@ -9,7 +9,7 @@ export const AccountContext = createContext(null);
 function AccountProvider({ children }) {
 
     const [authed, setAuthed] = useState(false);
-    const [currentAccount, setCurrentAccount] = useState();
+    const [currentAccount, setCurrentAccount] = useState(null);
     const [sender, setSender] = useState({});
     const [activeUsers, setActiveUsers] = useState([]);
     const [newMessageFlag, setNewMessageFlag] = useState();
@@ -17,7 +17,7 @@ function AccountProvider({ children }) {
     const socket = useRef();
 
     // const socketURL = "ws://pf-whatsappsocket.onrender.com";
-    const socketURL = "ws://localhost:8000/";
+    const socketURL = "ws://localhost:8001/";
 
     useEffect(() => {
         socket.current = io(socketURL);

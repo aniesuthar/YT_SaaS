@@ -1,110 +1,95 @@
-const { oAuth2Client } = require("../oAuth/googleOAuthData");
+const axios = require('axios');
 const { google } = require('googleapis');
-const User = require('../modal/UserModal')
+const User = require('../modal/UserModal');
+const { oAuth2Client } = require('../oAuth/googleOAuthData');
 
+const SCOPES = ['profile', 'email', 'openid', 'https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube.readonly'];
 
-var authed = false;
-var currentUser;
+let authed = false;
 
-var scopes = ['profile', 'email', 'openid',
-    'https://www.googleapis.com/auth/youtube.upload',
-    'https://www.googleapis.com/auth/youtube.readonly'
-]
-
-
-module.exports.login = (req, res) => {
+const login = async (req, res) => {
     try {
         if (!authed) {
-            //generate a Auth URL
-
-            var url = oAuth2Client.generateAuthUrl({
+            const authUrl = oAuth2Client.generateAuthUrl({
                 access_type: 'offline',
-                scope: scopes
-
-            })
-            res.send({ url, authed });
+                scope: SCOPES,
+            });
+            res.send({ url: authUrl, authed });
         } else {
-            console.log('Authrized Entry');
-            // res.send({authed});
-            var oauth2 = google.oauth2({
+            console.log('Authorized Entry');
+            const oauth2 = google.oauth2({
                 version: 'v2',
-                auth: oAuth2Client
-            })
+                auth: oAuth2Client,
+            });
 
-            oauth2.userinfo.get(async (err, response) => {
-                if (err) throw err;
-                var name = response.data.name;
-                var pic = response.data.picture;
-                var id = response.data.id;
+            const userInfo = await oauth2.userinfo.get();
+            const { id, name, picture } = userInfo.data;
 
+            await addUser(userInfo.data, res);
 
-                await addUser(response.data, res);
-                currentUser = response.data.id;
-                
-                res.status(200).send({ authed, id , name, pic });
-            })
+            res.status(200).send({ authed, id, name, pic: picture });
         }
     } catch (error) {
-        response.status(500).json(error);
-    }
-
-}
-
-module.exports.googleCallback = (req, res) => {
-
-    const code = req.query.code;
-
-    if (code) {
-        oAuth2Client.getToken(code, (err, tokens) => {
-            if (err) throw err;
-
-            console.log("Callback Tokens: Successfully Authenticated", tokens);
-            oAuth2Client.setCredentials(tokens);
-            authed = true;
-            // res.send(authed);
-            res.redirect('http://localhost:3000');
-        })
-    }
-}
-
-const addUser = async (userData, response) => {
-    try {
-        let exist = await User.findOne({ id: userData.id });
-
-        if (exist) {
-            console.log('user already exists');
-            return userData;
-        }
-
-        const newUser = new User(userData);
-        await newUser.save();
-        console.log("New user created:", newUser);
-    } catch (error) {
-        response.status(500).json("Error in addUser", error);
-    }
-}
-
-module.exports.getUser = async (request, response) => {
-    try {
-        const user = await User.find({});
-        response.status(200).json(user);
-    } catch (error) {
-        response.status(500).json(error);
-    }
-}
-
-module.exports.logout = (req, res) => {
-    try {
-        // Clear authentication state and user data
-        authed = false;
-        currentUser = null;
-        
-        res.status(200).send('Logout successful');
-    } catch (error) {
-        res.status(500).json(error);
+        console.error('Error in login:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
-module.exports.isAuthed = () => {
+const googleCallback = async (req, res) => {
+    try {
+        const code = req.query.code;
+        if (code) {
+            const { tokens } = await oAuth2Client.getToken(code);
+            console.log('Callback Tokens: Successfully Authenticated', tokens);
+            oAuth2Client.setCredentials(tokens);
+            authed = true;
+            res.redirect('http://localhost:3000');
+        } else {
+            res.status(400).json({ error: 'Bad Request' });
+        }
+    } catch (error) {
+        console.error('Error in Google Callback:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const addUser = async (userData, response) => {
+    try {
+        const exist = await User.findOne({ id: userData.id });
+
+        if (!exist) {
+            const newUser = new User(userData);
+            await newUser.save();
+            console.log('New user created:', newUser);
+        }
+    } catch (error) {
+        console.error('Error in addUser:', error.message);
+        response.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const getUser = async (request, response) => {
+    try {
+        const users = await User.find({});
+        response.status(200).json(users);
+    } catch (error) {
+        console.error('Error in getUser:', error.message);
+        response.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const logout = (req, res) => {
+    try {
+        authed = false;
+        res.status(200).send('Logout successful');
+    } catch (error) {
+        console.error('Error in logout:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const isAuthed = () => {
     return authed;
-}
+};
+
+module.exports = { login, googleCallback, addUser, getUser, logout, isAuthed };

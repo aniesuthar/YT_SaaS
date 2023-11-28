@@ -447,7 +447,10 @@
 // Conversation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 .conversation {
     display: block;
+    position: relative;
     transition: all 2s ease;
+    height: calc(100% - 88px);
+
     // overflow-y: scroll;
     .conversation-header {
         background-color: rgb(254, 228, 203);
@@ -486,7 +489,6 @@
 
     .messages {
         padding: 12px 24px;
-
         // overflow-y: scroll;
         p {
             // background-color: var(--app-container);
@@ -499,7 +501,7 @@
             border-radius: 14px;
             border-top-left-radius: 0;
 
-            span.timestamp{
+            span.timestamp {
                 margin-left: 5px;
                 font-size: 10px;
             }
@@ -517,7 +519,7 @@
     .type-message {
         width: 100%;
         display: flex;
-        position: absolute;
+        position: sticky;
         bottom: 0;
         left: 0;
         background-color: white;
@@ -589,7 +591,11 @@
 
 .project-boxes {
     margin: 0 -8px;
-    // overflow-y: auto;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     &.jsGridView {
         display: flex;
