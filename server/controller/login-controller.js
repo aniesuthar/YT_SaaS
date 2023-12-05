@@ -1,55 +1,63 @@
 const axios = require('axios');
 const { google } = require('googleapis');
 const User = require('../modal/UserModal');
-const { oAuth2Client } = require('../oAuth/googleOAuthData');
+// const { getClient } = require('../oAuth/googleOAuthData');
 
 const SCOPES = ['profile', 'email', 'openid', 'https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube.readonly'];
 
-let authed = false;
+// let authed = false;
 
 const login = async (req, res) => {
+    
     try {
-        if (!authed) {
-            const authUrl = oAuth2Client.generateAuthUrl({
-                access_type: 'offline',
-                scope: SCOPES,
-            });
-            res.send({ url: authUrl, authed });
-        } else {
-            console.log('Authorized Entry');
-            const oauth2 = google.oauth2({
-                version: 'v2',
-                auth: oAuth2Client,
-            });
+        const oAuth2Client = getClient(); // Get a new OAuth2Client instance for each user
+        req.session.oAuth2Client = oAuth2Client;
+        // console.log('Session ID in login:', req.sessionID);
+        // console.log('userOAuth2Client in Login:', req.session);
+        // const authUrl = userOAuth2Client.generateAuthUrl({
+        //     access_type: 'offline',
+        //     scope: SCOPES,
+        // });
+        // res.send({ url: authUrl });
 
-            const userInfo = await oauth2.userinfo.get();
-            const { id, name, picture } = userInfo.data;
+        // Rest of your login logic using userOAuth2Client
+        const oauth2 = google.oauth2({
+            version: 'v2',
+            auth: req.oAuth2Client,
+        });
+        // console.log('userOAuth2Client in login:', req.session.userOAuth2Client);
 
-            await addUser(userInfo.data, res);
+        const userInfo = await oauth2.userinfo.get();
+        const { id, name, picture } = userInfo.data;
 
-            res.status(200).send({ authed, id, name, pic: picture });
-        }
+        await addUser(userInfo.data, res);
+
+        return res.status(200).send({ id, name, pic: picture });
     } catch (error) {
         console.error('Error in login:', error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
 const googleCallback = async (req, res) => {
     try {
         const code = req.query.code;
+        // console.log('Session ID in Callback:', req.sessionID);
+        // console.log('userOAuth2Client in Callback:', req.session);
+
         if (code) {
-            const { tokens } = await oAuth2Client.getToken(code);
+            // const userOAuth2Client = req.session.userOAuth2Client;
+            const { tokens } = await req.oAuth2Client.getToken(code);
             console.log('Callback Tokens: Successfully Authenticated', tokens);
-            oAuth2Client.setCredentials(tokens);
-            authed = true;
-            res.redirect('http://localhost:3000');
+            req.oAuth2Client.setCredentials(tokens);
+            // authed = true;
+            return res.redirect('http://localhost:3000');
         } else {
-            res.status(400).json({ error: 'Bad Request' });
+            return res.status(400).json({ error: 'Bad Request' });
         }
     } catch (error) {
         console.error('Error in Google Callback:', error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 

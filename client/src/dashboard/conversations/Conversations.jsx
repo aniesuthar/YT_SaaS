@@ -42,13 +42,13 @@ export default function Conversations() {
                     {
                         users && users.map((user, index) => (
 
-                            currentAccount.id !== user.id &&
+                            // currentAccount.id !== user.id &&
 
                             <div key={index} className="message-box" onClick={() => handleSetChat(user)}>
                                 <img src={user.picture} alt="profile image" />
                                 <div className="message-content">
                                     <div className="message-header">
-                                        <div className="name">{user.name}</div>
+                                        <h2 className="name">{user.name}</h2>
                                         <div className="star-checkbox">
                                             <input type="checkbox" id="star-1" />
                                             <label htmlFor="star-1">

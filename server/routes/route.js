@@ -5,6 +5,7 @@ const { login, googleCallback, getUser, isAuthed, logout} = require('../controll
 const { YTupload } = require('../controller/YTupload-controller');
 const { newConversation, getConversation } = require('../controller/conversation-controller');
 const { newMessage, getMessages } = require('../controller/message-controller');
+const getLoggedinUser = require('../controller/loggedin-user-controller');
 
 
 
@@ -16,6 +17,7 @@ const route = express.Router();
 route.get('/login', login);
 route.get('/logout', logout);
 route.get('/auth/google/callback', googleCallback);
+route.get('/loggedin-user', getLoggedinUser);
 
 route.get('/authed', isAuthed);
 route.get('/users', getUser);

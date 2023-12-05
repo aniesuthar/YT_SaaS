@@ -13,6 +13,10 @@ import NotFound404 from '../components/NotFound404';
 
 export default function Dashboard({ user, channels, authed }) {
 
+
+
+    
+
     const { setAuthed, setCurrentAccount } = useContext(AccountContext);
     const [AuthUrl, setAuthUrl] = useState(null);
 

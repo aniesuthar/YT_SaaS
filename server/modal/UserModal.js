@@ -22,8 +22,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     family_name: {
-        type: String,
-        required: true
+        type: String
     },
     picture: {
         type: String,

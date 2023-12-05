@@ -1,6 +1,6 @@
 const { Server } = require('socket.io');
 
-const io = new Server(8000, {
+const io = new Server(8002, {
     cors: {
         origin: "http://localhost:3000",
     }

@@ -17,7 +17,7 @@ function AccountProvider({ children }) {
     const socket = useRef();
 
     // const socketURL = "ws://pf-whatsappsocket.onrender.com";
-    const socketURL = "ws://localhost:8001/";
+    const socketURL = "ws://localhost:8002/";
 
     useEffect(() => {
         socket.current = io(socketURL);

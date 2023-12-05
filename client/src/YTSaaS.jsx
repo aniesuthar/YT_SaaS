@@ -23,12 +23,12 @@ export default function YTSaaS() {
 
         const getAuthURL = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/login');
+                const response = await axios.get('http://localhost:5000/loggedin-user');
                 setAuthUrl(response.data.url);
                 setAuthed(response.data.authed);
                 setCurrentAccount(response.data);
                 setUser({ name: response.data.name, pic: response.data.pic });
-                
+                console.log("Login Use effect is working : currentAccount is: ", response.data);
                 if (response.data.authed) {
                     // Use the 'history' object to navigate to the desired URL
                     // navigate.push('/dashboard');
@@ -44,10 +44,13 @@ export default function YTSaaS() {
 
     return (
         <>
-            {!authed ?
-            <Login AuthUrl={AuthUrl} /> :
-            <Dashboard user={user} authed={authed} />
-            }
+            {/* {!authed ? */}
+            <Routes>
+                <Route path='/login' element={<Login AuthUrl={AuthUrl} />}></Route>
+                <Route path='/' element={<Dashboard user={user} authed={authed} />}></Route>
+             {/* : */}
+            </Routes>
+            {/* } */}
         </>
     );
 }
