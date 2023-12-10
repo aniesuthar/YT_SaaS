@@ -1,14 +1,24 @@
-const { oAuth2Client } = require("../oAuth/googleOAuthData");
+const { getClient } = require("../oAuth/googleOAuthData");
+const { get } = require("lodash");
 const { google } = require('googleapis');
 const { isAuthed } = require("./login-controller");
 
 
 module.exports.fetchChannels = async (req, res) => {
+
+
+    const accessToken =
+        get(req, "cookies.access_token") ||
+        get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
+
+        console.log("accessToken is", accessToken);
+
+    const oAuth2Client = getClient();
+    oAuth2Client.setCredentials({
+        access_token: accessToken,
+    });
+
     try {
-        if (!isAuthed) {
-            res.status(401).json({ error: 'Unauthorized' });
-            return;
-        }
 
         // Call the getChannels function and pass the oAuth2Client
         const channels = await getChannels(oAuth2Client);
@@ -28,7 +38,7 @@ async function getChannels(oAuth2Client) {
             mine: true,
         }, (err, response) => {
             if (err) {
-                console.log('The API returned an error: ' + err);
+                console.log('getChannel API returned an error: ' + err);
                 reject(err);
                 return;
             }

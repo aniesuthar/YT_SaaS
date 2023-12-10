@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { google } = require('googleapis');
 const User = require('../modal/UserModal');
-// const { getClient } = require('../oAuth/googleOAuthData');
+const { getClient } = require('../oAuth/googleOAuthData');
 
 const SCOPES = ['profile', 'email', 'openid', 'https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube.readonly'];
 

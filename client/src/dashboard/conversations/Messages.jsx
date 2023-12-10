@@ -23,12 +23,12 @@ export default function Messages({conversation}) {
                 createdAt: Date.now()
             })
         });
-    }, []);
+    }, [, newMessageFlag]);
     
     useEffect(() => {
         incomingMessage && conversation?.members?.includes(incomingMessage.senderId) && 
         setMessages(prev => [...prev, incomingMessage]);
-    }, [incomingMessage, conversation])
+    }, [incomingMessage, conversation, newMessageFlag])
 
 
 

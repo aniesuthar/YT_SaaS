@@ -9,7 +9,9 @@ export default function FetchChannels({authed}) {
 
     const handleFetchChannels = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/get-channel-info');
+            const response = await axios.get('http://localhost:5000/get-channel-info', {
+                withCredentials: true
+            });
             console.log(response.data);
             // Assuming the response contains an array of channels
             setChannels(response.data.channels);

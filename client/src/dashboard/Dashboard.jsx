@@ -11,7 +11,7 @@ import UploadForm from './Form/UploadForm'
 import { logout } from '../api/api';
 import NotFound404 from '../components/NotFound404';
 
-export default function Dashboard({ user, channels, authed }) {
+export default function Dashboard({ user, channels, authed, children }) {
 
 
 
@@ -259,14 +259,12 @@ export default function Dashboard({ user, channels, authed }) {
                         </svg>
                     </NavLink>
                 </div>
-                <Routes>
-                    <Route path="/" element={<ProjectsSection switchView={{ switchToGridView, switchToListView }} />} ></Route>
-                    <Route path="/fetch-channels" element={<FetchChannels authed={authed} />}></Route>
-                    <Route path="/upload-form" element={<UploadForm />} />
-                    <Route path='*' element={<NotFound404 />} />
-                    {/* <Route path='/login' element={<Login AuthUrl={AuthUrl}/>} /> */}
-                </Routes>
-
+                {/* <Routes>
+                    <Route index element={<ProjectsSection switchView={{ switchToGridView, switchToListView }} />} ></Route>
+                    <Route path="fetch-channels" element={<FetchChannels authed={authed} />}></Route>
+                    <Route path="upload-form" element={<UploadForm />} />
+                </Routes> */}
+                    {children}
                 <div className="messages-section">
                     <button className="messages-close">
                         <svg
