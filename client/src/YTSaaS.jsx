@@ -51,7 +51,6 @@ export default function YTSaaS() {
                 setAuthed(true);
                 setCurrentAccount(response.data);
                 setUser({ name: response.data.name, pic: response.data.picture });
-                console.log("Login Use effect is working : currentAccount is: ", response.data);
                 if (response.data.authed) {
                     // Use the 'history' object to navigate to the desired URL
                     // navigate.push('/dashboard');

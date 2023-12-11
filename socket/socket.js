@@ -1,10 +1,16 @@
 const { Server } = require('socket.io');
+const http = require('http');
 
-const io = new Server(8000, {
-    cors: {
-        origin: 'http://localhost:3000'
-    },
-})
+const server = http.createServer();
+
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+  transports: ['websocket'], // Specify WebSocket as the primary transport
+});
 
 
 let users = [];
@@ -24,18 +30,19 @@ const getUser = (userId) => {
 io.on('connection', (socket) => {
     console.log('user connected', socket.id);
 
-    console.log("Users are:", users);
-
+    
     //connect
     socket.on("addUser", userData => {
         addUser(userData, socket.id);
         io.emit("getUsers", users)
+        console.log("Users are:", users);
     })
 
     //send message
     socket.on('sendMessage', (data) => {
         const user = getUser(data.receiverId);
-        io.to(user.socketId).emit('getMessage', data)
+        console.log("socekt SendMessage envoked", data, user);
+        // io.to(user.socketId).emit('getMessage', data);
     })
 
     //disconnect
@@ -45,3 +52,9 @@ io.on('connection', (socket) => {
         io.emit('getUsers', users);
     })
 })
+
+
+const PORT = 8009;
+server.listen(PORT, () => {
+  console.log(`Socket server is running on port ${PORT}`);
+});

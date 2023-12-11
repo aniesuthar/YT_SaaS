@@ -1,7 +1,7 @@
 const { google } = require('googleapis');
 const axios = require('axios');
 const {oAuth2Client} = require('../oAuth/googleOAuthData');
-const io = require('../../socket/index');
+// const io = require('../../socket/index');
 
 
 var title, description, tags, progressString;
@@ -59,7 +59,7 @@ module.exports.YTupload = async (req, res) => {
             previousLineLength = progressString.length;
 
             if (uploadedBytes > 0) {
-                io.emit('progress', { progressString });
+                // io.emit('progress', { progressString });
             }
         });
         // console.log(`Upload Progress: ${progress.toFixed(2)}%`);

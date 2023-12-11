@@ -40,7 +40,7 @@ const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file, setIma
                 </PreviewContainer>} */}
             <input
                 placeholder="Type a message..."
-                inputProps={{ 'aria-label': 'search' }}
+                InputProps={{ 'aria-label': 'search' }}
                 onChange={(e) => setValue(e.target.value)}
                 value={value}
             />

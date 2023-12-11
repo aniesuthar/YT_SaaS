@@ -34,10 +34,10 @@ export default function Messages({conversation}) {
 
     useEffect(() => {
         const getMessageDetails = async () => {
-            console.log("getMessagesDetails convo: ", conversation);
+            // console.log("getMessagesDetails convo: ", conversation);
             let data = await getMessages(conversation?._id);
             setMessages(data);
-            console.log("getMessages:", data);
+            // console.log("getMessages:", data);
 
             // socket.current.on('getMessages', (data) => {
             //     // Update your React state or UI with the progress data

@@ -8,7 +8,7 @@ import Messages from './Messages';
 
 export default function Conversation({ handleBack }) {
 
-  const { sender, currentAccount, socket, setNewMessageFlag } = useContext(AccountContext);
+  const { sender, currentAccount, setActiveUsers, socket, setNewMessageFlag } = useContext(AccountContext);
   const [conversation, setConversation] = useState({});
 
   useEffect(() => {
@@ -19,6 +19,14 @@ export default function Conversation({ handleBack }) {
     }
     getConversationDetails();
   }, []);
+
+  useEffect(() => {
+    socket.current.emit('addUser', sender);
+    console.log("addUser is envoked", sender);
+    socket.current.on("getUsers", users => {
+        setActiveUsers(users);
+    })
+}, [sender])
 
 
 
@@ -51,8 +59,6 @@ export default function Conversation({ handleBack }) {
         text: image
       };
     }
-    console.log(message);
-    console.log(value);
     socket.current.emit('sendMessage', message);
     await newMessage(message);
 

@@ -4,12 +4,13 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon index.js",
+        "start": "nodemon socket.js",
         "build": "npm i"
     },
     "author": "Anil SuTHAR",
     "license": "ISC",
     "dependencies": {
+        "http": "^0.0.1-security",
         "nodemon": "^3.0.1",
         "socket.io": "^4.7.2"
     }

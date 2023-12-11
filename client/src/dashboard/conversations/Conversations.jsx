@@ -8,18 +8,18 @@ import { AccountContext } from '../../context/AccountProvider';
 export default function Conversations() {
 
     const [chat, setChat] = useState(false);
-    const { socket, sender, setSender, currentAccount, setActiveUsers } = useContext(AccountContext);
+    const { sender, setSender, currentAccount } = useContext(AccountContext);
     // const { account, socket, setActiveUsers } = useContext(AccountContext);
 
     const [users, setUsers] = useState([]);
 
-    console.log("Current Account", currentAccount);
     const handleSetChat = async (user) => {
         setSender(user);
         setChat(!chat);
         // console.log(sender);
         await setConversation({ senderId: user.id, receiverId: currentAccount.id });
     }
+
     const handleBack = () => {
         setChat(!chat);
         setSender(null);
@@ -35,12 +35,6 @@ export default function Conversations() {
         fetchData();
     }, [sender]);
 
-    useEffect(() => {
-        socket.current.emit('addUser', currentAccount);
-        socket.current.on("getUsers", users => {
-            setActiveUsers(users);
-        })
-    }, [currentAccount])
 
 
     return (
