@@ -8,8 +8,7 @@ import { AccountContext } from '../../context/AccountProvider';
 export default function Conversations() {
 
     const [chat, setChat] = useState(false);
-    const { sender, setSender, currentAccount } = useContext(AccountContext);
-    // const { account, socket, setActiveUsers } = useContext(AccountContext);
+    const { socket, setActiveUsers, sender, setSender, currentAccount } = useContext(AccountContext);
 
     const [users, setUsers] = useState([]);
 
@@ -35,7 +34,12 @@ export default function Conversations() {
         fetchData();
     }, [sender]);
 
-
+    useEffect(() => {
+        socket.current.emit('addUser', currentAccount);
+        socket.current.on("getUsers", users => {
+            setActiveUsers(users);
+        })
+    }, [currentAccount])
 
     return (
         chat ? <Conversation handleBack={handleBack} /> :

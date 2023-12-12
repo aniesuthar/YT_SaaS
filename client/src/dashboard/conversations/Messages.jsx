@@ -16,19 +16,18 @@ export default function Messages({conversation}) {
     
 
     useEffect(() => {
-
-        socket.current.on('getMessages', (data) => {
+        socket.current.on('getMessage', data => {
             setIncomingMessage({
                 ...data,
                 createdAt: Date.now()
             })
-        });
-    }, [, newMessageFlag]);
-    
+        })
+    }, []);
+
     useEffect(() => {
-        incomingMessage && conversation?.members?.includes(incomingMessage.senderId) && 
-        setMessages(prev => [...prev, incomingMessage]);
-    }, [incomingMessage, conversation, newMessageFlag])
+        incomingMessage && conversation?.members?.includes(incomingMessage.senderId) &&
+            setMessages(prev => [...prev, incomingMessage]); console.log("incomingMessage wala useEffect");
+    }, [incomingMessage, conversation])
 
 
 
@@ -37,15 +36,9 @@ export default function Messages({conversation}) {
             // console.log("getMessagesDetails convo: ", conversation);
             let data = await getMessages(conversation?._id);
             setMessages(data);
-            // console.log("getMessages:", data);
-
-            // socket.current.on('getMessages', (data) => {
-            //     // Update your React state or UI with the progress data
-            //     setMessages(data);
-            // });
         }
         getMessageDetails();
-    }, [conversation, sender, newMessageFlag]);
+    }, [conversation._id, sender._id, newMessageFlag]);
 
 
 

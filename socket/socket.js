@@ -40,9 +40,8 @@ io.on('connection', (socket) => {
 
     //send message
     socket.on('sendMessage', (data) => {
-        const user = getUser(data.receiverId);
-        console.log("socekt SendMessage envoked", data, user);
-        // io.to(user.socketId).emit('getMessage', data);
+        const user = getUser(String(data.senderId));
+        io.to(user.socketId).emit('getMessage', data);
     })
 
     //disconnect
