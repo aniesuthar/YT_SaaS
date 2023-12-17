@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file, setImage }) => {
+const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file }) => {
 
     const [previewURL, setPreviewURL] = useState();
 
@@ -13,7 +13,7 @@ const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file, setIma
                 setPreviewURL(URL.createObjectURL(file));
 
                 // const response = await uploadFile(data);
-                // setImage(response.data);
+                // setFile(response.data);
             }
         }
         getImage();
@@ -27,12 +27,17 @@ const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file, setIma
     return (
         <form className='type-message'>
 
-            <input
-                type='file'
-                id="fileInput"
-                style={{ display: 'none' }}
-                onChange={(e) => onFileChange(e)}
-            />
+            <div className="file-input" title='Select Video/Image files'>
+                <input
+                    type='file'
+                    id="fileInput"
+                    onChange={(e) => onFileChange(e)}
+                    accept="image/*, video/*"
+                />
+                <label for="fileInput" class="fileBtn">
+                    <span>+</span>
+                </label>
+            </div>
             {/* {file &&
                 <PreviewContainer>
                     <img src={previewURL} alt="preview" title="Your file input" style={{ maxHeight: "100%" }} />

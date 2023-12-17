@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import Conversation from './Conversation';
 import { getUsers, setConversation } from '../../api/api';
 import { AccountContext } from '../../context/AccountProvider';
+import userFallback from '../../images/profile-fallback.png'
 
 
 
@@ -51,7 +52,7 @@ export default function Conversations() {
                             // currentAccount.id !== user.id &&
 
                             <div key={index} className="message-box" onClick={() => handleSetChat(user)}>
-                                <img src={user.picture} alt="profile image" />
+                                <img src={user.picture} alt="profile image" onError={e => e.target.src = userFallback}/>
                                 <div className="message-content">
                                     <div className="message-header">
                                         <h2 className="name">{user.name}</h2>

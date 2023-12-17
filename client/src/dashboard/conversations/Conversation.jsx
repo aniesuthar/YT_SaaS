@@ -4,6 +4,7 @@ import TypeField from './TypeField';
 import { AccountContext } from '../../context/AccountProvider';
 import { getConversation, newMessage } from '../../api/api';
 import Messages from './Messages';
+import userFallback from '../../images/profile-fallback.png'
 
 
 export default function Conversation({ handleBack }) {
@@ -54,10 +55,40 @@ export default function Conversation({ handleBack }) {
     socket.current.emit('sendMessage', message);
     await newMessage(message);
 
-    setValue('');
+    setValue(null);
+    setFile(null);
     setNewMessageFlag(prev => !prev);
   }
 
+  const sendMedia = async (e) => {
+ 
+    let message = {};
+    if (!file) {
+        message = {
+            senderId: account.sub,
+            receiverId: person.sub,
+            conversationId: conversation._id,
+            type: 'text',
+            text: value
+        };
+    } else {
+        message = {
+            senderId: account.sub,
+            conversationId: conversation._id,
+            receiverId: person.sub,
+            type: 'file',
+            text: image
+        };
+    }
+
+    socket.current.emit('sendMessage', message);
+    await newMessage(message);
+
+    setValue('');
+    setFile();
+    setImage('');
+    setNewMessageFlag(prev => !prev);
+} 
 
   return (
     <div className="conversation">
@@ -66,16 +97,18 @@ export default function Conversation({ handleBack }) {
           <img src={backIcon} height="32px" width="32px" alt="" title="back"/></button>
         <img
           src={sender.picture}
+          onError={e => e.target.src = userFallback}
           alt="profile image" />
         <span>{sender.name}</span>
       </div>
       <Messages conversation={conversation}/>
       <TypeField
-        sendText={sendText}
         value={value}
         setValue={setValue}
-        setFile={setFile}
+        sendText={sendText}
         file={file}
+        setFile={setFile}
+        sendMedia={sendMedia}
       />
     </div>
   )

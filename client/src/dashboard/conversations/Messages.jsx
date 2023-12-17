@@ -26,7 +26,7 @@ export default function Messages({conversation}) {
 
     useEffect(() => {
         incomingMessage && conversation?.members?.includes(incomingMessage.senderId) &&
-            setMessages(prev => [...prev, incomingMessage]); console.log("incomingMessage wala useEffect");
+            setMessages(prev => [...prev, incomingMessage]);
     }, [incomingMessage, conversation])
 
 

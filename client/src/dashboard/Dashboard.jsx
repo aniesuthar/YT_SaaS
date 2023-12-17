@@ -9,6 +9,7 @@ import ProjectsSection from './ProjectsSection';
 import FetchChannels from './FetchChannels';
 import UploadForm from './Form/UploadForm'
 import { logout } from '../api/api';
+import userFallback from '../images/profile-fallback.png'
 import NotFound404 from '../components/NotFound404';
 
 export default function Dashboard({ user, channels, authed, children }) {
@@ -164,7 +165,7 @@ export default function Dashboard({ user, channels, authed, children }) {
                         </svg>
                     </button>
                     <button className="profile-btn" title="LOGOUT" onClick={handleLogout}>
-                        <img src={user.pic} />
+                        <img src={user.pic} onError={e => e.target.src = userFallback}/>
                         <span>Hi, {user.name}!</span>
                     </button>
                 </div>

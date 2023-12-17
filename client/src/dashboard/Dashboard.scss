@@ -489,6 +489,7 @@
 
     .messages {
         padding: 12px 24px;
+
         // overflow-y: scroll;
         p {
             // background-color: var(--app-container);
@@ -529,10 +530,55 @@
 
         input {
             width: 100%;
-            padding: 16px 24px;
+            padding: 16px 12px;
             border: none;
             outline: none;
         }
+
+        div.file-input {
+            background-color: rgb(255, 159, 69);
+            border-radius: 15px;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-top-left-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            font-weight: bold;
+            /* 20px/16px 0 */
+            overflow: hidden;
+            padding: 0.875em;
+            /* 14px/16px */
+            position: relative;
+            text-align: center;
+            width: 90px;
+            cursor: pointer;
+
+            &:hover,
+            &:active,
+            &:focus {
+                background-color: rgb(253, 143, 40);
+                cursor: pointer;
+            }
+
+            input {
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin: 0;
+                padding: 0;
+                opacity: 0.5;
+                height: 100%;
+                visibility: hidden;
+                // width: 120px;
+                // font-size: 100%;
+                // cursor: pointer;
+                // filter: alpha(opacity=0);
+            }
+            *{
+                cursor: pointer;
+            }
+        }
+
 
         button {
             padding: 12px 32px;
