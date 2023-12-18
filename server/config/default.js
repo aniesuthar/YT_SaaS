@@ -41,4 +41,10 @@ rWMSEJbydqHLm+D5Yb9AxI2viOLQvcppgEFqvoj+d3x4SMOslQKGyoerr0IvJ8dz
         "559102681862-bcbqu4ed3hrtg43v3mju7o03t8rl934j.apps.googleusercontent.com",
     googleClientSecret: "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",
     googleOauthRedirectUrl: "http://localhost:1337/api/sessions/oauth/google",
+
+    S3AccessKey: "AKIA3ULL222AB25ZUN4C",
+    S3SecretAccessKey: "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",
+    S3BucketName: "ytsaas",
+    S3Region: "ap-south-1"
+
 };

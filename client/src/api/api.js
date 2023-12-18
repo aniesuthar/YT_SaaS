@@ -56,6 +56,27 @@ export const getMessages = async (id) => {
     }
 }
 
+export const uploadToYT = async ({ formData }) => {
+    try {
+        const response = await axios.post('/upload-to-YT', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        console.log('Server response:', response);
+    } catch (error) {
+        console.error('Error submitting form UPLOADtoYT:', error);
+    }
+}
+
+export const uploadToS3 = async (data) => {
+    try {
+        return await axios.post(`/upload-to-S3`, data);
+    } catch (error) {
+        console.log('Error while calling uploadToS3 API ', error);
+    }
+}
+
 export const logout = async () => {
     try {
         let response = await axios.get('/logout');

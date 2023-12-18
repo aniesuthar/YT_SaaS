@@ -546,18 +546,15 @@
             font-weight: bold;
             /* 20px/16px 0 */
             overflow: hidden;
-            padding: 0.875em;
             /* 14px/16px */
             position: relative;
             text-align: center;
             width: 90px;
-            cursor: pointer;
 
             &:hover,
             &:active,
             &:focus {
                 background-color: rgb(253, 143, 40);
-                cursor: pointer;
             }
 
             input {
@@ -569,13 +566,18 @@
                 opacity: 0.5;
                 height: 100%;
                 visibility: hidden;
+                cursor: pointer;
                 // width: 120px;
                 // font-size: 100%;
                 // cursor: pointer;
                 // filter: alpha(opacity=0);
             }
-            *{
-                cursor: pointer;
+
+            & .fileBtn {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                padding: 0.875em;
             }
         }
 

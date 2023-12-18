@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import { AccountContext } from '../../context/AccountProvider';
+import { uploadToYT } from '../../api/api';
 
 
 
@@ -28,23 +29,7 @@ export default function UploadForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Your form submission logic here
-        // You can use formData to send the form data to the server
-
-        try {
-            // Using Axios to send a POST request to the server
-            const response = await axios.post('http://localhost:5000/upload', formData, {
-                // Ensure that Axios sends the request with the appropriate content type
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            // Handle the response as needed
-            console.log('Server response:', response);
-        } catch (error) {
-            console.error('Error submitting form:', error);
-        }
+        await uploadToYT({formData});
     };
 
     const handleChange = (event) => {

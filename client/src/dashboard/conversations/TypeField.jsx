@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react';
+import { uploadToS3 } from '../../api/api';
 
-const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file }) => {
+const TypeField = ({ sendMssg, setValue, value, setFile, file }) => {
 
     const [previewURL, setPreviewURL] = useState();
 
     useEffect(() => {
-        const getImage = async () => {
+        const getFile = async () => {
             if (file) {
                 const data = new FormData();
                 data.append("name", file.name);
                 data.append("file", file);
-                setPreviewURL(URL.createObjectURL(file));
+                // setPreviewURL(URL.createObjectURL(file));
 
-                // const response = await uploadFile(data);
-                // setFile(response.data);
+                const response = await uploadToS3(data);
+                setFile(response.data);
             }
         }
-        getImage();
+        getFile();
     }, [file])
+
+    console.log(file);
 
     const onFileChange = (e) => {
         setValue(e.target.files[0].name);
@@ -31,6 +34,7 @@ const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file }) => {
                 <input
                     type='file'
                     id="fileInput"
+                    name='file'
                     onChange={(e) => onFileChange(e)}
                     accept="image/*, video/*"
                 />
@@ -49,7 +53,7 @@ const TypeField = ({ sendText, sendMedia, setValue, value, setFile, file }) => {
                 onChange={(e) => setValue(e.target.value)}
                 value={value}
             />
-            <button onClick={(e) => sendText(e)}>Send</button>
+            <button onClick={(e) => sendMssg(e)} title= {file ? "SendFile" : "SendTextMssg"}>Send</button>
 
         </form>
     )
