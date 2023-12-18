@@ -15,6 +15,8 @@ const TypeField = ({ sendMssg, setValue, value, setFile, file }) => {
 
                 const response = await uploadToS3(data);
                 setFile(response.data);
+            } else {
+                return "No files selected/uploaded yet!";
             }
         }
         getFile();
@@ -38,7 +40,7 @@ const TypeField = ({ sendMssg, setValue, value, setFile, file }) => {
                     onChange={(e) => onFileChange(e)}
                     accept="image/*, video/*"
                 />
-                <label for="fileInput" class="fileBtn">
+                <label htmlFor="fileInput" class="fileBtn">
                     <span>+</span>
                 </label>
             </div>

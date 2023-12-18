@@ -24,7 +24,7 @@ export default function Conversation({ handleBack }) {
 
 
   const [value, setValue] = useState();
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
 
 
   const sendMssg = async (e) => {
@@ -41,6 +41,7 @@ export default function Conversation({ handleBack }) {
         text: value
       };
     } else {
+      console.log(file);
       message = {
         senderId: sender.id,
         receiverId: currentAccount.id,

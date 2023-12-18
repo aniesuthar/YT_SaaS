@@ -491,12 +491,12 @@
         padding: 12px 24px;
 
         // overflow-y: scroll;
-        p {
+        .mssg {
             // background-color: var(--app-container);
             background-color: rgb(213, 222, 255);
             // color: var(--secondary-color);
             opacity: 0.8;
-            width: fit-content;
+            max-width: fit-content;
             padding: 6px 12px;
             margin: 5px 0;
             border-radius: 14px;
@@ -508,7 +508,7 @@
             }
         }
 
-        & p.own {
+        & .mssg.own {
             margin-left: auto;
             border-top-left-radius: 14px;
             border-bottom-right-radius: 0;
