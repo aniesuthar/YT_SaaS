@@ -22,8 +22,6 @@ const TypeField = ({ sendMssg, setValue, value, setFile, file }) => {
         getFile();
     }, [file])
 
-    console.log(file);
-
     const onFileChange = (e) => {
         setValue(e.target.files[0].name);
         setFile(e.target.files[0]);

@@ -77,6 +77,14 @@ export const uploadToS3 = async (data) => {
     }
 }
 
+export const getFromS3 = async (key) => {
+    try {
+        return await axios.get(`/getfile-S3/${key}`);
+    } catch (error) {
+        console.log('Error while calling uploadToS3 API ', error);
+    }
+}
+
 export const logout = async () => {
     try {
         let response = await axios.get('/logout');
