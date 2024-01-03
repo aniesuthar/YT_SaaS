@@ -53,7 +53,7 @@ export default function Conversation({ handleBack }) {
     socket.current.emit('sendMessage', message);
     await newMessage(message);
 
-    setValue(null);
+    setValue("");
     setFile(null);
     setNewMessageFlag(prev => !prev);
   }

@@ -12,13 +12,13 @@ export default function Message({ message }) {
         sender.id === message.senderId ?
             <div className='mssg own'>
                 {
-                    message.type === 'file' ? <ImageMessage message={message} /> : <TextMessage message={message} />
+                    message.type === 'file' ? <FileMessage message={message} /> : <TextMessage message={message} />
                 }
             </div>
             :
             <div className='mssg'>
                 {
-                    message.type === 'file' ? <ImageMessage message={message} /> : <TextMessage message={message} />
+                    message.type === 'file' ? <FileMessage message={message} /> : <TextMessage message={message} />
                 }
             </div>
     )
@@ -33,24 +33,24 @@ const TextMessage = ({ message }) => {
     )
 }
 
-const ImageMessage = ({ message }) => {
+const FileMessage = ({ message }) => {
 
-    const [imageSrc, setImageSrc] = useState('');
+    const [fileSrc, setFileSrc] = useState('');
 
     useEffect(() => {
         // Fetch the image content from S3 when the component mounts for messages of type 'file'
         if (message.type === 'file') {
-            const fetchImageFromS3 = async () => {
+            const fetchFileFromS3 = async () => {
                 try {
                     const response = await getFromS3(message.text);
 
-                    setImageSrc(`http://localhost:5000/getfile-S3/${message.text}`);
+                    setFileSrc(`http://localhost:5000/getfile-S3/${message.text}`);
                 } catch (error) {
                     console.error('Error fetching image from S3:', error);
                 }
             };
 
-            fetchImageFromS3();
+            fetchFileFromS3();
         }
     }, [message.type, message.text]);
 
@@ -64,9 +64,9 @@ const ImageMessage = ({ message }) => {
                     </div>
                     :
                     message?.text?.includes('.mp4') ?   
-                        <video class="f804f6gw ln8gz9je ppled2lx K13VR" controls="" controlslist="nodownload nofullscreen" src="blob:https://web.whatsapp.com/942aa292-953c-49de-8add-ed64d8dc40a4"></video>
+                        <video style={{ width: 300, height: '100%', objectFit: 'cover' }} src={fileSrc} controls></video>
                         :
-                        <img style={{ width: 300, height: '100%', objectFit: 'cover' }} src={imageSrc} />
+                        <img style={{ width: 300, height: '100%', objectFit: 'cover' }} src={fileSrc} />
             }
             <p style={{ position: 'absolute', bottom: 0, right: 0 }}>
                 <img

@@ -11,12 +11,12 @@ export default function Messages({conversation}) {
     const scrollRef = useRef();
     const [messages, setMessages] = useState([]);
     const [incomingMessage , setIncomingMessage] = useState(null)
-    const { sender, socket, newMessageFlag } = useContext(AccountContext);
+    const { sender, socket, newMessageFlag, notification, setNotification } = useContext(AccountContext);
 
     
 
     useEffect(() => {
-        socket.current.on('getMessage', data => {
+        socket.current.on('getMessage', data => {            
             setIncomingMessage({
                 ...data,
                 createdAt: Date.now()
@@ -27,9 +27,15 @@ export default function Messages({conversation}) {
     useEffect(() => {
         incomingMessage && conversation?.members?.includes(incomingMessage.senderId) &&
             setMessages(prev => [...prev, incomingMessage]);
-    }, [incomingMessage, conversation])
 
+            //give notification
 
+            setNotification([incomingMessage, ...notification]);
+            
+        }, [incomingMessage, conversation])
+        
+        
+        console.log(notification);
 
     useEffect(() => {
         const getMessageDetails = async () => {
