@@ -38,7 +38,7 @@ const TypeField = ({ sendMssg, setValue, value, setFile, file }) => {
                     onChange={(e) => onFileChange(e)}
                     accept="image/*, video/*"
                 />
-                <label htmlFor="fileInput" class="fileBtn">
+                <label htmlFor="fileInput" className="fileBtn">
                     <span>+</span>
                 </label>
             </div>

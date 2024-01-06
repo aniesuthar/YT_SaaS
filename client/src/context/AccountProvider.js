@@ -1,5 +1,6 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { io } from 'socket.io-client';
+import { getUsers } from "../api/api";
 
 export const AccountContext = createContext(null);
 
@@ -29,7 +30,32 @@ function AccountProvider({ children }) {
                 socket.current = null;
             }
         };
-    }, [socket]);
+    }, []);
+
+    const [unreadMessages, setUnreadMessages] = useState([]);
+
+    const markMessageAsRead = (messageId) => {
+        setUnreadMessages((prev) => prev.filter((message) => message._id !== messageId));
+    };
+    
+    const showBrowserNotification = (title, options) => {
+        if (Notification.permission === 'granted') {
+            new Notification(title, options);
+        }
+    };
+
+    useEffect(() => {
+        socket?.current.on('getMessage', async (data) => {
+            setUnreadMessages((prev) => [...prev, data]);
+            
+            showBrowserNotification(`New Message`, {
+                body: data.text
+            });
+        });
+
+
+    }, []);
+    console.log(unreadMessages, "---Notification---");
 
     return (
         <AccountContext.Provider value={{
@@ -45,7 +71,11 @@ function AccountProvider({ children }) {
             newMessageFlag,
             setNewMessageFlag,
             notification,
-            setNotification
+            setNotification,
+            unreadMessages,
+            setUnreadMessages,
+            markMessageAsRead,
+            showBrowserNotification
         }}>
             {children}
         </AccountContext.Provider>

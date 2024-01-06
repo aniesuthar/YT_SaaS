@@ -151,6 +151,7 @@
 
 .notification-btn {
     color: var(--main-color);
+    position: relative;
     padding: 0;
     border: 0;
     background-color: transparent;
@@ -158,6 +159,25 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    .notification-indicator{
+        background-color: red;
+        color: #fff;
+        min-width: 18px;
+        padding: 0 2px;
+        height: 18px;
+        font-size: 13px;
+        vertical-align: middle;
+        text-align: center;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        border: 1px solid var(--app-container);
+    }
 }
 
 .profile-btn {
@@ -349,6 +369,7 @@
 
     &-header {
         position: sticky;
+        position: -webkit-sticky;
         top: 0;
         display: flex;
         justify-content: space-between;
@@ -450,8 +471,11 @@
     position: relative;
     transition: all 2s ease;
     height: calc(100% - 88px);
+    overflow-y: scroll;
 
-    // overflow-y: scroll;
+    &::-webkit-scrollbar {
+            display: none;
+        }
     .conversation-header {
         background-color: rgb(254, 228, 203);
         padding: 16px 24px;
@@ -489,7 +513,7 @@
 
     .messages {
         padding: 12px 24px;
-
+        min-height: calc(100% - 121px);
         // overflow-y: scroll;
         .mssg {
             // background-color: var(--app-container);

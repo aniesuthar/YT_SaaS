@@ -61,8 +61,24 @@ export default function YTSaaS() {
             }
 
         }
+
+
+        // Request permission to show notifications
+        const requestNotificationPermission = async () => {
+            try {
+                const permission = await Notification.requestPermission();
+                return permission === 'granted';
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+                return false;
+            }
+        };
+
         me();
-    }, []);
+        requestNotificationPermission();
+
+        
+    }, [Notification]);
 
 
     return (

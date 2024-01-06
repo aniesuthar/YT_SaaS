@@ -18,7 +18,7 @@ export default function Dashboard({ user, channels, authed, children }) {
 
     
 
-    const { setAuthed, setCurrentAccount } = useContext(AccountContext);
+    const { setAuthed, setCurrentAccount, unreadMessages} = useContext(AccountContext);
     const [AuthUrl, setAuthUrl] = useState(null);
 
     const [isDarkMode, setDarkMode] = useState(false);
@@ -163,6 +163,7 @@ export default function Dashboard({ user, channels, authed, children }) {
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                         </svg>
+                        {unreadMessages.length > 0 && <span className='notification-indicator'>{(unreadMessages.length > 9) ? "9+" : unreadMessages.length}</span>}
                     </button>
                     <button className="profile-btn" title="LOGOUT" onClick={handleLogout}>
                         <img src={user.pic} onError={e => e.target.src = userFallback}/>

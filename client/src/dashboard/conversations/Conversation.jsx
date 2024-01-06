@@ -7,9 +7,10 @@ import Messages from './Messages';
 import userFallback from '../../images/profile-fallback.png'
 
 
-export default function Conversation({ handleBack }) {
+export default function Conversation({ handleBack, chat}) {
 
-  const { sender, currentAccount, socket, setNewMessageFlag } = useContext(AccountContext);
+  const { sender, currentAccount, socket, setNewMessageFlag
+  } = useContext(AccountContext);
   const [conversation, setConversation] = useState({});
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export default function Conversation({ handleBack }) {
     getConversationDetails();
   }, []);
 
-
+  
 
   const [value, setValue] = useState();
   const [file, setFile] = useState(null);
@@ -69,7 +70,7 @@ export default function Conversation({ handleBack }) {
           alt="profile image" />
         <span>{sender.name}</span>
       </div>
-      <Messages conversation={conversation} />
+      <Messages conversation={conversation} chat={chat}/>
       <TypeField
         value={value}
         setValue={setValue}
